@@ -4,6 +4,8 @@ This is a collection of Java utilities to simplify access to "STRING-DB":http://
 
 h2. Building and using
 
+First edit @resources/jdbc-v1.0.properties@ and save under @/opt/stringdb/jdbc-v1.0.properties@.
+
 The project uses "Maven":http://maven.apache.org as its build system.
 In order to build it, simply run the @mvn clean package
  -DskipTests@ command in the cloned directory.
