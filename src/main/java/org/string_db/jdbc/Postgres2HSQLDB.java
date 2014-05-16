@@ -95,28 +95,26 @@ public class Postgres2HSQLDB {
         jdbcTemplate.query(sql, new RowCallbackHandler() {
                     @Override
                     public void processRow(ResultSet rs) throws SQLException {
-                        while (rs.next()) {
-                            result.append("INSERT INTO ").append(table);
-                            if (columns != null) result.append(columns);
-                            result.append(" VALUES(");
-                            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
-                                if (i > 0) {
-                                    result.append(", ");
-                                }
-                                Object value = rs.getObject(i + 1);
-                                if (value == null) {
-                                    result.append("NULL");
-                                } else {
-                                    String outputValue = value.toString();
-                                    // In a string started with ' (singlequote) use '' (two singlequotes) to create a ' (singlequote).
-                                    //see http://www.hsqldb.org/doc/guide/ch09.html#expression-section
-                                    //XXX use Connection.escapeString ?
-                                    outputValue = outputValue.replaceAll("'", "''");
-                                    result.append("'" + outputValue + "'");
-                                }
+                        result.append("INSERT INTO ").append(table);
+                        if (columns != null) result.append(columns);
+                        result.append(" VALUES(");
+                        for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                            if (i > 0) {
+                                result.append(", ");
                             }
-                            result.append(");\n");
+                            Object value = rs.getObject(i + 1);
+                            if (value == null) {
+                                result.append("NULL");
+                            } else {
+                                String outputValue = value.toString();
+                                // In a string started with ' (singlequote) use '' (two singlequotes) to create a ' (singlequote).
+                                //see http://www.hsqldb.org/doc/guide/ch09.html#expression-section
+                                //XXX use Connection.escapeString ?
+                                outputValue = outputValue.replaceAll("'", "''");
+                                result.append("'" + outputValue + "'");
+                            }
                         }
+                        result.append(");\n");
                     }
                 }
         );
