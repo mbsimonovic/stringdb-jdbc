@@ -64,7 +64,6 @@ public class ProteinRepositoryJdbcTest {
         final Map<Integer, String> sequences = repo.loadProteinSequences(511145);
         assertEquals(2, sequences.size());
         assertEquals("MKRISTTITTTITITTGNGAG", sequences.get(4735233));
-
     }
 
     @Test
@@ -78,5 +77,12 @@ public class ProteinRepositoryJdbcTest {
     public void test_loadUniqueUniProtIds() throws Exception {
         final Map<Integer, UniprotAC> ids = repo.loadUniqueUniProtIds(272634);
         assertEquals(new UniprotAC("P11311"), ids.get(2815147));
+    }
+
+    @Test
+    public void test_count() throws Exception {
+        Integer numProteins = repo.count(511145);
+        assertEquals(new Integer(4149), numProteins);
+
     }
 }

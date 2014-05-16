@@ -21,6 +21,7 @@ package org.string_db.jdbc;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.string_db.ProteinExternalId;
 import org.string_db.ProteinRepository;
@@ -52,8 +53,12 @@ public class ProteinRepositoryJdbc implements ProteinRepository {
             map.put(proteinId, new UniprotAC(linkout));
         }
     };
+
     @Autowired
     GenericQueryProcessor queryProcessor;
+
+    @Autowired
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public Map<Integer, ProteinExternalId> loadExternalIds(Integer speciesId) {
@@ -99,6 +104,14 @@ public class ProteinRepositoryJdbc implements ProteinRepository {
     public Map<Integer, UniprotAC> loadUniqueUniProtIds(Integer speciesId) {
         return queryProcessor.selectTwoColumns("protein_id", "protein_name", "items.proteins_names", uniprotAcMapper,
                 "linkout = 'UniProt' AND species_id = :species_id", new MapSqlParameterSource("species_id", speciesId));
+    }
+
+    @Override
+    public Integer count(Integer speciesId) {
+        return namedParameterJdbcTemplate.queryForObject(
+                "select count(protein_id) from items.proteins where species_id = :species_id",
+                new MapSqlParameterSource("species_id", speciesId),
+                Integer.class);
     }
 
 }

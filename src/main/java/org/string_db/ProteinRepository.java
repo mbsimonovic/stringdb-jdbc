@@ -72,4 +72,10 @@ public interface ProteinRepository {
      * @return {protein_id -> UniprotAC} map
      */
     Map<Integer, UniprotAC> loadUniqueUniProtIds(Integer speciesId);
+
+    /**
+     * @param speciesId
+     * @return total number of proteins for this <code>speciesId</code>
+     */
+    Integer count(Integer speciesId);
 }
