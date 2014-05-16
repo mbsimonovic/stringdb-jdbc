@@ -21,6 +21,7 @@ package org.string_db.jdbc;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.string_db.ProteinExternalId;
+import org.string_db.UniprotAC;
 
 import java.util.Map;
 import java.util.Set;
@@ -73,4 +74,9 @@ public class ProteinRepositoryJdbcTest {
         assertEquals("thrA", names.get(4735233));
     }
 
+    @Test
+    public void test_loadUniqueUniProtIds() throws Exception {
+        final Map<Integer, UniprotAC> ids = repo.loadUniqueUniProtIds(272634);
+        assertEquals(new UniprotAC("P11311"), ids.get(2815147));
+    }
 }

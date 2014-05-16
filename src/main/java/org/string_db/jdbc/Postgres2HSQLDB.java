@@ -42,11 +42,6 @@ import java.sql.SQLException;
  */
 public class Postgres2HSQLDB {
     final JdbcTemplate jdbcTemplate;
-
-    public Postgres2HSQLDB(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final String selectIndexDef =
             "SELECT pg_get_indexdef(i.indexrelid) \n" +
                     "FROM   pg_class c, pg_namespace n, pg_index i, pg_class t\n" +
@@ -58,6 +53,9 @@ public class Postgres2HSQLDB {
                     "   AND n.nspname = ?\n" +
                     "   AND t.relname = ?";
 
+    public Postgres2HSQLDB(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public static void main(final String[] args) throws FileNotFoundException, UnsupportedEncodingException, SQLException {
         final ApplicationContext ctx = new AnnotationConfigApplicationContext(DbConfig.class, DriverDataSourceConfig.class);
@@ -68,9 +66,9 @@ public class Postgres2HSQLDB {
         // skip checksum (not used) and annotation_word_vectors columns (postgresql specific data type - tsvector)
         converter.dumpTable("items", "proteins", "species_id in (511145)", "hsql-data.sql",
                 new String[]{"protein_id", "protein_external_id", "species_id", "annotation", "preferred_name"});
-        //m.pneumoniae has fewest names:
+//        m.pneumoniae has fewest names:
         converter.dumpTable("items", "proteins_names", "species_id in (272634)", "hsql-data.sql",
-                new String[]{"protein_id", "protein_name", "species_id", /*escape keyword*/"\"source\""});
+                new String[]{"protein_id", "protein_name", "species_id", /*escape keyword*/"\"source\"", "linkout"});
     }
 
     private void dumpTable(String schema, String table, String filter, String fileName, String[] columnsToInclude) {

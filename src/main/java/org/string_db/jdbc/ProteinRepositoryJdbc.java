@@ -18,11 +18,13 @@
 
 package org.string_db.jdbc;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.string_db.ProteinExternalId;
 import org.string_db.ProteinRepository;
+import org.string_db.UniprotAC;
 
 import java.util.Map;
 import java.util.Set;
@@ -33,16 +35,25 @@ import java.util.Set;
 @Component
 public class ProteinRepositoryJdbc implements ProteinRepository {
 
-    @Autowired
-    GenericQueryProcessor queryProcessor;
-
+    private static final Logger log = Logger.getLogger(ProteinRepositoryJdbc.class);
     protected final TwoColumnRowMapper<Integer, String, Set<String>> multiValSqlRowMapper = TwoColumnRowMapper.multiValMapper();
     protected TwoColumnRowMapper<Integer, String, ProteinExternalId> idExternalIdMapper = new TwoColumnRowMapper<Integer, String, ProteinExternalId>() {
         @Override
-        public void addToMap(Integer firstColumn, String secondColumn, Map<Integer, ProteinExternalId> map) {
-            map.put(firstColumn, new ProteinExternalId(secondColumn));
+        public void addToMap(Integer protein_id, String protein_external_id, Map<Integer, ProteinExternalId> map) {
+            map.put(protein_id, new ProteinExternalId(protein_external_id));
         }
     };
+    protected TwoColumnRowMapper<Integer, String, UniprotAC> uniprotAcMapper = new TwoColumnRowMapper<Integer, String, UniprotAC>() {
+        @Override
+        public void addToMap(Integer proteinId, String linkout, Map<Integer, UniprotAC> map) {
+            if (map.containsKey(proteinId)) {
+                log.warn("duplicate uniprotAc for " + proteinId);
+            }
+            map.put(proteinId, new UniprotAC(linkout));
+        }
+    };
+    @Autowired
+    GenericQueryProcessor queryProcessor;
 
     @Override
     public Map<Integer, ProteinExternalId> loadExternalIds(Integer speciesId) {
@@ -82,6 +93,12 @@ public class ProteinRepositoryJdbc implements ProteinRepository {
                 TwoColumnRowMapper.<Integer, String>uniqueValMapper(),
                 " protein_id IN (select protein_id from items.proteins where species_id  = :species_id );",
                 new MapSqlParameterSource("species_id", speciesId));
+    }
+
+    @Override
+    public Map<Integer, UniprotAC> loadUniqueUniProtIds(Integer speciesId) {
+        return queryProcessor.selectTwoColumns("protein_id", "protein_name", "items.proteins_names", uniprotAcMapper,
+                "linkout = 'UniProt' AND species_id = :species_id", new MapSqlParameterSource("species_id", speciesId));
     }
 
 }

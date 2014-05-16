@@ -60,7 +60,7 @@ public class UniprotAC implements Serializable {
             throw new IllegalArgumentException("null AC");
         }
         if (ac.length() != 6) {
-            throw new IllegalArgumentException("AC must be exactly 6 chars long, not: " + ac.length());
+            throw new IllegalArgumentException("AC must be exactly 6 chars long, not: " + ac.length() + ": " + ac);
         }
         if (STARTS_WITH_OPQ_FORMAT.matcher(ac).matches() || OTHER_FORMAT.matcher(ac).matches()) {
             return;

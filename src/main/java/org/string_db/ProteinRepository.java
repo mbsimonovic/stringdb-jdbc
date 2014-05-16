@@ -65,4 +65,11 @@ public interface ProteinRepository {
      */
     Map<Integer, String> loadProteinSequences(Integer speciesId);
 
+    /**
+     * load unique (1:1) mapping of protein_ids-UniProt_ids  for this species
+     *
+     * @param speciesId
+     * @return {protein_id -> UniprotAC} map
+     */
+    Map<Integer, UniprotAC> loadUniqueUniProtIds(Integer speciesId);
 }
