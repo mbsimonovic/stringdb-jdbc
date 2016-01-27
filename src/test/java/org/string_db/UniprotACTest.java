@@ -33,6 +33,7 @@ public class UniprotACTest {
         UniprotAC.isValidUniprotAC("Q1AAA9");
         UniprotAC.isValidUniprotAC("O456A1");
         UniprotAC.isValidUniprotAC("P4A123");
+        UniprotAC.isValidUniprotAC("A0A022YWF9");
     }
 
     @Test
@@ -44,7 +45,7 @@ public class UniprotACTest {
 
     @Test
     public void
-    test_ac_must_be_6_chars_long() {
+    test_ac_must_be_6_or_10_chars_long() {
         tryToCreateUniprotACAndFailIfNoExceptionIsThrown("P1234567", "AC must be exactly 6 chars long");
         tryToCreateUniprotACAndFailIfNoExceptionIsThrown("P1234", "AC must be exactly 6 chars long");
     }

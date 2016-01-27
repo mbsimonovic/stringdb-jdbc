@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
  */
 public class UniprotAC implements Serializable {
 
-    private static final Pattern STARTS_WITH_OPQ_FORMAT = Pattern.compile("[O,P,Q][0-9][A-Z,0-9][A-Z,0-9][A-Z,0-9][0-9]");
-    private static final Pattern OTHER_FORMAT = Pattern.compile("[A-N,R-Z][0-9][A-Z][A-Z,0-9][A-Z,0-9][0-9]");
+    private static final Pattern UNIPROT_AC_FORMAT = Pattern.compile(
+            "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}");
 
     private String ac;
 
@@ -40,18 +40,7 @@ public class UniprotAC implements Serializable {
     }
 
     /**
-     * Accession numbers consist of 6 alphanumerical characters in the following format:
-     * <table>
-     * <tr>
-     * <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
-     * </tr>
-     * <tr>
-     * <td>[A-N,R-Z]</td><td>[0-9]</td><td>[A-Z]</td><td>[A-Z, 0-9]</td><td>[A-Z, 0-9]</td><td>[0-9]</td>
-     * </tr>
-     * <tr>
-     * <td>[O,P,Q]</td><td>[0-9]</td><td>[A-Z, 0-9]</td><td>[A-Z, 0-9]</td><td>[A-Z, 0-9]</td><td>[0-9]</td>
-     * </tr>
-     * </table>
+     * Accession numbers consist of 6 or 10 alphanumerical characters.
      *
      * @see <a href="http://web.expasy.org/docs/userman.html#AC_line">AC format</a>
      */
@@ -59,10 +48,10 @@ public class UniprotAC implements Serializable {
         if (ac == null) {
             throw new IllegalArgumentException("null AC");
         }
-        if (ac.length() != 6) {
-            throw new IllegalArgumentException("AC must be exactly 6 chars long, not: " + ac.length() + ": " + ac);
+        if (ac.length() != 6 && ac.length() != 10) {
+            throw new IllegalArgumentException("AC must be exactly 6 or 10 chars long, not: " + ac.length() + ": " + ac);
         }
-        if (STARTS_WITH_OPQ_FORMAT.matcher(ac).matches() || OTHER_FORMAT.matcher(ac).matches()) {
+        if (UNIPROT_AC_FORMAT.matcher(ac).matches()) {
             return;
         }
         throw new IllegalArgumentException("illegal AC format: " + ac);
