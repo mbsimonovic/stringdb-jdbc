@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <groupId>org.string-db</groupId>
     <artifactId>jdbc</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>STRING-DB PostgreSQL Java interface</name>
     <url>http://string-db.org/</url>
     <packaging>jar</packaging>
@@ -37,6 +37,14 @@
         <connection>scm:git:https://bitbucket.org/milan/stringdb-jdbc.git</connection>
         <url>https://bitbucket.org/milan/stringdb-jdbc</url>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>meringlab</id>
+            <name>meringlab repository</name>
+            <url>http://imlslnx-titan.uzh.ch/nexus/content/repositories/vmering</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
